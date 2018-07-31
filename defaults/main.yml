@@ -1,0 +1,12 @@
+---
+# defaults file for diana-docker
+
+diana_container_name:          diana-worker
+
+diana_redis_container_name:    redis
+diana_redis_host:              "{{ dockerhost_ip }}"
+diana_redis_password:          "passw0rd!"
+diana_redis_port:              6379
+
+diana_broker_db:               1
+diana_result_db:               2

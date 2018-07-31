@@ -1,0 +1,22 @@
+---
+# tasks file for diana-docker
+
+- name: Get dockerhost
+  shell: /sbin/ip route | awk '/docker0/ { print $NF }'
+  register: dockerhost_response
+
+- set_fact:
+    dockerhost_ip:    "{{ dockerhost_response.stdout }}"
+
+- set_fact:
+    broker_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_broker_db }}"
+    result_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_result_db }}"
+
+- docker_container:
+    name:  "{{ diana_container_name }}"
+    image: "derekmerck/diana:latest"
+    state: started
+    env:
+      DIANA_BROKER:  "{{ broker_url }}"
+      DIANA_RESULT:  "{{ result_url }}"
+      TZ: America/New_York

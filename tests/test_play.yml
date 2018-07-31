@@ -1,0 +1,6 @@
+---
+- hosts: '{{ test_host | default( "localhost") }}'
+  roles:
+    - role: '{{ "diana-docker" if test_host=="vagrant" else "ansible-diana-docker" }}'
+      diana_redis_port: '{{ lookup("env", "redis_port" ) }}'
+
