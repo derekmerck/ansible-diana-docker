@@ -1,6 +1,8 @@
 ---
 # defaults file for diana-docker
 
+diana_learn_image:             false
+
 diana_container_name:          diana-worker
 
 diana_redis_container_name:    redis
