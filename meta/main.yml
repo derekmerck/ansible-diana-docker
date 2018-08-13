@@ -19,3 +19,5 @@ dependencies:
 
   - role: derekmerck.redis_docker
     redis_port: "{{ diana_redis_port }}"
+
+    # TODO: When diana-star

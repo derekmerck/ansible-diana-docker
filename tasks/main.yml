@@ -1,6 +1,11 @@
 ---
 # tasks file for diana-docker
 
+
+#############################
+# Setup dockerhost
+#############################
+
 - name: Get dockerhost
   shell: /sbin/ip route | awk '/docker0/ { print $NF }'
   register: dockerhost_response
@@ -8,15 +13,31 @@
 - set_fact:
     dockerhost_ip:    "{{ dockerhost_response.stdout }}"
 
+#############################
+# Create config directories
+#############################
+
+- name: "Create {{ orthanc_config_dir }} directory for config"
+  file:
+    path: '{{ diana_config_dir }}'
+    state: directory
+
+#############################
+# Setup container
+#############################
+
 - set_fact:
     broker_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_broker_db }}"
     result_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_result_db }}"
 
 - docker_container:
     name:  "{{ diana_container_name }}"
-    image: "derekmerck/diana:latest"
+    image: "{{ diana_docker_image }}:{{ diana_docker_tag }}"
     state: started
     env:
       DIANA_BROKER:  "{{ broker_url }}"
       DIANA_RESULT:  "{{ result_url }}"
       TZ: America/New_York
+
+    volumes:
+      - "{{ diana_config_dir }}:/opt/diana/config"

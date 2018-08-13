@@ -1,9 +1,11 @@
 ---
 # defaults file for diana-docker
 
-diana_learn_image:             false
+diana_docker_image:            derekmerck/diana
+diana_docker_tag:              latest
 
 diana_container_name:          diana-worker
+diana_config_dir:              "/config/{{ diana_container_name }}"
 
 diana_redis_container_name:    redis
 diana_redis_host:              "{{ dockerhost_ip }}"
