@@ -17,7 +17,7 @@
 # Create config directories
 #############################
 
-- name: "Create {{ orthanc_config_dir }} directory for config"
+- name: "Create {{ diana_config_dir }} directory for config"
   file:
     path: '{{ diana_config_dir }}'
     state: directory
@@ -34,10 +34,14 @@
     name:  "{{ diana_container_name }}"
     image: "{{ diana_docker_image }}:{{ diana_docker_tag }}"
     state: started
+    command: "{{ diana_command }}"
+    working_dir: "{{ diana_workdir }}"
     env:
       DIANA_BROKER:  "{{ broker_url }}"
       DIANA_RESULT:  "{{ result_url }}"
       TZ: America/New_York
+
+    ports: "{{ diana_ports | default([]) }}"
 
     volumes:
       - "{{ diana_config_dir }}:/opt/diana/config"
