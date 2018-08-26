@@ -44,3 +44,6 @@
 
     volumes:
       - "{{ diana_config_dir }}:/opt/diana/config"
+
+    log_driver:   "{{ diana_logger }}"
+    log_options:  "{{ diana_log_opts }}"

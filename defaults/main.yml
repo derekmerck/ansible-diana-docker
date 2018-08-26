@@ -2,6 +2,7 @@
 # defaults file for diana-docker
 
 config_dir: "/config"
+logger:     "json-file"
 
 diana_docker_image:            derekmerck/diana
 diana_docker_tag:              latest
@@ -10,6 +11,9 @@ diana_command:                 "tail -f /dev/null"
 diana_container_name:          diana-worker
 diana_base_config_dir:         "/config"
 diana_config_dir:              "{{ config_dir }}/{{ diana_container_name }}"
+
+diana_logger:                  "{{ logger }}"
+diana_log_opts:                "{{ {'splunk_name': diana_container_name } if diana_logger=='splunk' else {} }}"
 
 diana_workdir:                 "/usr/share/source/diana"
 
