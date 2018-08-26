@@ -16,7 +16,7 @@
 
 
 #############################
-# Create config directories
+# Create config and data directories
 #############################
 
 - name: "Create {{ diana_config_dir }} directory for config"
@@ -24,6 +24,11 @@
     path: '{{ diana_config_dir }}'
     state: directory
 
+- name: "Create {{ diana_data_dir }} directory for data"
+  file:
+    path: '{{ diana_data_dir }}'
+    state: directory
+  when: diana_bind_data_dir
 
 #############################
 # Setup container
@@ -33,21 +38,29 @@
     broker_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_broker_db }}"
     result_url: "redis://:{{ diana_redis_password }}@{{ dockerhost_ip }}:{{ diana_redis_port }}/{{ diana_result_db }}"
 
+- set_fact:
+    _diana_env: '{{
+      { "DIANA_BROKER":  broker_url,
+        "DIANA_RESULT":  result_url,
+        "TZ": "America/New_York"
+      } | combine( diana_extra_env )
+     }}'
+
 - docker_container:
     name:  "{{ diana_container_name }}"
     image: "{{ diana_docker_image }}:{{ diana_docker_tag }}"
     state: started
     command: "{{ diana_command }}"
     working_dir: "{{ diana_workdir }}"
-    env:
-      DIANA_BROKER:  "{{ broker_url }}"
-      DIANA_RESULT:  "{{ result_url }}"
-      TZ: America/New_York
+    env: "{{ _diana_env }}"
+#      DIANA_BROKER:  "{{ broker_url }}"
+#      DIANA_RESULT:  "{{ result_url }}"
+#      TZ: America/New_York
 
     ports: "{{ diana_ports | default([]) }}"
 
-    volumes:
-      - "{{ diana_config_dir }}:/opt/diana/config"
+    volumes: '{{ [ "{}:/config".format(diana_config_dir) ] +
+                 [ "{}:/data".format(diana_data_dir) ] if diana_bind_data_dir else [] }}'
 
     log_driver:   "{{ diana_logger }}"
     log_options:  "{{ diana_log_opts }}"
