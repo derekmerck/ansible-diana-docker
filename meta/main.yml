@@ -15,8 +15,12 @@ galaxy_info:
 dependencies:
   - role: geerlingguy.pip
     pip_install_packages: docker
+    tags: deps
+
   - role: geerlingguy.docker
+    tags: deps
 
   - role: derekmerck.redis_docker
     redis_port: "{{ diana_redis_port }}"
+    tags: deps
     when: diana_star
