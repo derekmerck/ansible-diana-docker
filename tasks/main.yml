@@ -59,8 +59,9 @@
 
     ports: "{{ diana_ports | default([]) }}"
 
-    volumes: '{{ [ "{}:/config".format(diana_config_dir) ] +
-                 [ "{}:/data".format(diana_data_dir) ] if diana_bind_data_dir else [] }}'
+    volumes: '{{  [ "{}:/config".format(diana_config_dir) ] +
+                 ([ "{}:/resources".format(diana_resource_dir) ] if diana_resources_dir else []) +
+                 ([ "{}:/data".format(diana_data_dir) ] if diana_bind_data_dir else []) }}'
 
     log_driver:   "{{ diana_logger }}"
     log_options:  "{{ diana_log_opts }}"

@@ -13,6 +13,7 @@ diana_container_name:          diana
 
 diana_config_dir:              "{{ config_dir }}/{{ diana_container_name }}"
 diana_data_dir:                "{{ data_dir }}/{{ diana_container_name }}"
+diana_resource_dir:            None
 
 diana_star:                    False
 diana_extra_env:               {}
